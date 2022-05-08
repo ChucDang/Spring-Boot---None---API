@@ -2,6 +2,7 @@ package com.example.demo.domain;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +13,10 @@ public class Order {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
+    @ManyToOne
+    private User user;
     private Date placedAt;
+    @NotBlank(message = "Vui lòng nhập trường này")
     private String deliveryName;
     private String deliveryStreet;
     private String deliveryCity;
@@ -38,3 +42,4 @@ public class Order {
         this.placedAt = new Date();
     }
 }
+

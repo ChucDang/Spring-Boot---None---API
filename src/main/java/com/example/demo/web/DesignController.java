@@ -2,30 +2,44 @@ package com.example.demo.web;
 
 import com.example.demo.data.IngredientRepository;
 import com.example.demo.data.TacoRepository;
+import com.example.demo.data.UserRepository;
 import com.example.demo.domain.Ingredient;
+import com.example.demo.domain.Ingredient.Type;
 import com.example.demo.domain.Order;
 import com.example.demo.domain.Taco;
+import com.example.demo.domain.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/design")
 @SessionAttributes("order")
+@Slf4j
 public class DesignController {
-    private final IngredientRepository ingredientRepo;
+
+    private IngredientRepository ingredientRepo;
+
     private TacoRepository tacoRepo;
+
+    private UserRepository userRepo;
 
     @Autowired
     public DesignController(
             IngredientRepository ingredientRepo,
-            TacoRepository tacoRepo) {
+            TacoRepository tacoRepo,
+            UserRepository userRepo) {
         this.ingredientRepo = ingredientRepo;
         this.tacoRepo = tacoRepo;
+        this.userRepo = userRepo;
     }
 
     @ModelAttribute(name = "order")
@@ -39,21 +53,30 @@ public class DesignController {
     }
 
     @GetMapping
-    public String showDesignForm(Model model) {
+    public String showDesignForm(Model model, Principal principal) {
+        log.info("   --- Designing taco");
         List<Ingredient> ingredients = new ArrayList<>();
         ingredientRepo.findAll().forEach(i -> ingredients.add(i));
 
-        Ingredient.Type[] types = Ingredient.Type.values();
-        for (Ingredient.Type type : types) {
+        Type[] types = Ingredient.Type.values();
+        for (Type type : types) {
             model.addAttribute(type.toString().toLowerCase(),
                     filterByType(ingredients, type));
         }
 
+        String username = principal.getName();
+        User user = userRepo.findByUsername(username);
+        model.addAttribute("user", user);
+
         return "design";
     }
+
     @PostMapping
-    public String processDesign(Taco taco, Errors errors,
+    public String processDesign(
+            @Valid Taco taco, Errors errors,
             @ModelAttribute Order order) {
+
+        log.info("   --- Saving taco");
 
         if (errors.hasErrors()) {
             return "design";
@@ -65,15 +88,12 @@ public class DesignController {
         return "redirect:/orders/current";
     }
 
-//end::injectingDesignRepository[]
-
     private List<Ingredient> filterByType(
-            List<Ingredient> ingredients, Ingredient.Type type) {
+            List<Ingredient> ingredients, Type type) {
         return ingredients
                 .stream()
                 .filter(x -> x.getType().equals(type))
                 .collect(Collectors.toList());
     }
+
 }
-
-

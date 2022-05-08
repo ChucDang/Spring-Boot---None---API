@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
+
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,10 +23,12 @@ public class Taco {
   private Long id;
 
   @NonNull
+  @Size(min = 5, message = "Vui lòng nhập tên dài hơn 5 kí tự")
   private String name;
   private Date createdAt;
 
   @ManyToMany(targetEntity=Ingredient.class)
+  @Size(min=1, message = "Vui lòng thêm ít nhất 1 thành phần")
   private List<Ingredient> ingredients = new ArrayList<>();
   
   @PrePersist
