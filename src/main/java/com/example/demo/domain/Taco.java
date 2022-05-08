@@ -5,12 +5,15 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
-
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 @Data
+@NoArgsConstructor(access = AccessLevel.PUBLIC, force = true)
 @Entity
+@Table(name = "Taco")
 public class Taco {
 
   @Id
@@ -18,13 +21,10 @@ public class Taco {
   private Long id;
 
   @NonNull
-  @Size(min=5, message="Name must be at least 5 characters long")
   private String name;
-
   private Date createdAt;
 
   @ManyToMany(targetEntity=Ingredient.class)
-  @Size(min=1, message="You must choose at least 1 ingredient")
   private List<Ingredient> ingredients = new ArrayList<>();
   
   @PrePersist
