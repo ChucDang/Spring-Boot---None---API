@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "tacos.orders.page-size",
+    "type": "java.lang.String",
+    "description": "Trả về danh sách số phần tử gần nhất."
+  },
+  {
+    "name": "taco.discount.codes",
+    "type": "java.util.Map<java.lang.String, java.lang.Integer>",
+    "description": "A map of discount codes to a discount percentage."
+  }
+]}
