@@ -28,7 +28,7 @@ public class Taco {
   private Date createdAt;
 
   @ManyToMany(targetEntity=Ingredient.class)
-  @Size(min=1, message = "Vui lòng thêm ít nhất 1 thành phần")
+  // @Size(min=1, message = "Vui lòng thêm ít nhất 1 thành phần")
   private List<Ingredient> ingredients = new ArrayList<>();
   
   @PrePersist
